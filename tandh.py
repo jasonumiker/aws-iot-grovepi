@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Send Temp and Humidity to AWS IoT and display on the local screen
 # By Jason Umiker
-# jumiker@amazon.com
+# jason.umiker@gmail.com
 # Version 1.0
 
 from grovepi import *
@@ -19,17 +19,17 @@ dht_sensor_type = 0
 setRGB(0,255,0)
 
 # set up AWS IoT certificate-based connection
-myMQTTClient = AWSIoTMQTTClient("pi")
+myMQTTClient = AWSIoTMQTTClient("grovepi")
 myMQTTClient.configureEndpoint("a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com", 8883)
-myMQTTClient.configureCredentials("/home/pi/aws-iot/CA.pem", 
-    "/home/pi/aws-iot/aa152c19e4-private.pem.key", 
-    "/home/pi/aws-iot/aa152c19e4-certificate.pem.crt")
+myMQTTClient.configureCredentials("/home/pi/aws-iot-grovepi/root-CA.crt", 
+    "/home/pi/aws-iot-grovepi/grovepi.private.key", 
+    "/home/pi/aws-iot-grovepi/grovepi.cert.pem")
 myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
 myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myMQTTClient.connect()
-myMQTTClient.publish("pi/info", "connected", 0)
+myMQTTClient.publish("grovepi/info", "connected", 0)
 
 while True:
     try:
@@ -51,12 +51,12 @@ while True:
         # send the data up to the AWS IOT service
         now = datetime.utcnow()
         now_str = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-        payload = '{ "timestamp": "' + now_str + '","temperature": ' + t + ',"humidity": '+ h + ' }'
+        payload = '{ "device": "grovepi-1",' + '"timestamp": "' + now_str + '","temperature": ' + t + ',"humidity": '+ h + ' }'
         #print(payload)
-        myMQTTClient.publish("pi/data", payload, 0)
+        myMQTTClient.publish("tandh", payload, 0)
         
         # wait some time before re-updating the LCD and IoT
-        sleep(4)
+        sleep(5)
 
     except (IOError, TypeError) as e:
         print(str(e))

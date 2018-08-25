@@ -45,18 +45,18 @@ BUTTONPRESSEDCOUNT = 0
 LIGHTSHADOW = 0
 
 # set up AWS IoT certificate-based connection
-MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient("pi")
+MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient("grovepi")
 MY_MQTT_SHADOW_CLIENT.configureEndpoint(
     "a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com", 8883)
 MY_MQTT_SHADOW_CLIENT.configureCredentials(
-    "/home/pi/aws-iot/CA.pem", "/home/pi/aws-iot/aa152c19e4-private.pem.key",
-    "/home/pi/aws-iot/aa152c19e4-certificate.pem.crt")
+    "/home/pi/aws-iot-grovepi/root-CA.crt", "/home/pi/aws-iot-grovepi/grovepi.private.key",
+    "/home/pi/aws-iot-grovepi/grovepi.cert.pem")
 MY_MQTT_SHADOW_CLIENT.configureAutoReconnectBackoffTime(1, 32, 20)
 MY_MQTT_SHADOW_CLIENT.configureConnectDisconnectTimeout(10)  # 10 sec
 MY_MQTT_SHADOW_CLIENT.configureMQTTOperationTimeout(5)  # 5 sec
 MY_MQTT_SHADOW_CLIENT.connect()
 DEVICESHADOWHANDLER = MY_MQTT_SHADOW_CLIENT.createShadowHandlerWithName(
-    "pi", True)
+    "grovepi", True)
 DEVICESHADOWHANDLER.shadowRegisterDeltaCallback(custom_shadow_callback_delta)
 
 print "This example will turn a LED on and off with button presses / IoT shadow deltas"
