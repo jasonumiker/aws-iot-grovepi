@@ -68,6 +68,18 @@ myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myMQTTClient.connect()
 myMQTTClient.publish("grovepi/info", "connected", 0)
+
+# set up AWS IoT certificate-based connection
+MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient("grovepi")
+MY_MQTT_SHADOW_CLIENT.configureEndpoint(
+    "a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com", 8883)
+MY_MQTT_SHADOW_CLIENT.configureCredentials("/home/pi/aws-iot-grovepi/root-CA.crt", 
+    "/home/pi/aws-iot-grovepi/grovepi.private.key", 
+    "/home/pi/aws-iot-grovepi/grovepi.cert.pem")
+MY_MQTT_SHADOW_CLIENT.configureAutoReconnectBackoffTime(1, 32, 20)
+MY_MQTT_SHADOW_CLIENT.configureConnectDisconnectTimeout(10)  # 10 sec
+MY_MQTT_SHADOW_CLIENT.configureMQTTOperationTimeout(5)  # 5 sec
+MY_MQTT_SHADOW_CLIENT.connect()
 DEVICESHADOWHANDLER = MY_MQTT_SHADOW_CLIENT.createShadowHandlerWithName(
     "grovepi", True)
 DEVICESHADOWHANDLER.shadowRegisterDeltaCallback(custom_shadow_callback_delta)
@@ -158,4 +170,5 @@ while True:
         setText("")
         digitalWrite(LED, 0)
         myMQTTClient.disconnect()
+        MY_MQTT_SHADOW_CLIENT.disconnect()
         break
