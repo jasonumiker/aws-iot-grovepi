@@ -89,7 +89,7 @@ print "Connect the Button to port D" + str(BUTTON)
 print "Connect the LED to the port D" + str(LED)
 
 # do our initial report that the light is off
-LASTREPORTTIME = datetime.datetime.utcnow()
+LASTREPORTTIME = datetime.utcnow()
 print "Initial reporting LIGHTSHADOW = " + str(LIGHTSHADOW)
 JSONPAYLOAD = '{"state":{"reported":{"lighton":0}}}'
 DEVICESHADOWHANDLER.shadowUpdate(JSONPAYLOAD, custom_shadow_callback_update, 5)
@@ -142,7 +142,7 @@ while True:
         digitalWrite(LED, LIGHTSHADOW)
 
         # work out the time delta between last update and now
-        CURRENTTIME = datetime.datetime.utcnow()
+        CURRENTTIME = datetime.utcnow()
         TIMEDELTA = CURRENTTIME - LASTREPORTTIME
 
         # every 2 seconds report the current state to AWS IoT
@@ -153,7 +153,7 @@ while True:
             if LIGHTSHADOW == 1:
                 JSONPAYLOAD = '{"state":{"reported":{"lighton":1}}}'
             DEVICESHADOWHANDLER.shadowUpdate(JSONPAYLOAD, custom_shadow_callback_update, 5)
-            LASTREPORTTIME = datetime.datetime.utcnow()
+            LASTREPORTTIME = datetime.utcnow()
         
         # wait some time before re-updating the LCD and IoT
         sleep(1)
