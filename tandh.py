@@ -28,7 +28,7 @@ setRGB(0,255,0)
 # set up AWS IoT certificate-based connection
 myMQTTClient = AWSIoTMQTTClient(thing_name)
 myMQTTClient.configureEndpoint(iot_endpoint, 8883)
-myMQTTClient.configureCredentials(ca, crt, key)
+myMQTTClient.configureCredentials(ca, key, crt)
 myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
 myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec

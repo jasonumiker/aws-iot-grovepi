@@ -54,7 +54,7 @@ LIGHTSHADOW = 0
 # set up AWS IoT certificate-based connection
 MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient(iot_thing_name)
 MY_MQTT_SHADOW_CLIENT.configureEndpoint(iot_endpoint, 8883)
-MY_MQTT_SHADOW_CLIENT.configureCredentials(ca, crt, key)
+MY_MQTT_SHADOW_CLIENT.configureCredentials(ca, key, crt)
 MY_MQTT_SHADOW_CLIENT.configureAutoReconnectBackoffTime(1, 32, 20)
 MY_MQTT_SHADOW_CLIENT.configureConnectDisconnectTimeout(10)  # 10 sec
 MY_MQTT_SHADOW_CLIENT.configureMQTTOperationTimeout(5)  # 5 sec
