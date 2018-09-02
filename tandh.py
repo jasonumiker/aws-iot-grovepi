@@ -16,6 +16,7 @@ ca = HOME_PATH + 'root-CA.crt'
 crt = HOME_PATH + 'grovepi.cert.pem'
 key = HOME_PATH + 'grovepi.private.key'
 iot_endpoint = 'a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com'
+thing_name = 'grovepi'
 
 # configure sensor
 dht_sensor_port = 7
@@ -25,7 +26,7 @@ dht_sensor_type = 0
 setRGB(0,255,0)
 
 # set up AWS IoT certificate-based connection
-myMQTTClient = AWSIoTMQTTClient("grovepi")
+myMQTTClient = AWSIoTMQTTClient(thing_name)
 myMQTTClient.configureEndpoint(iot_endpoint, 8883)
 myMQTTClient.configureCredentials(ca, crt, key)
 myMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
@@ -33,7 +34,7 @@ myMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
 myMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 myMQTTClient.connect()
-myMQTTClient.publish("grovepi/info", "connected", 0)
+myMQTTClient.publish(thing_name + "/info", "connected", 0)
 
 while True:
     try:
@@ -55,7 +56,7 @@ while True:
         # send the data up to the AWS IOT service
         now = datetime.utcnow()
         now_str = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-        payload = '{ "device": "grovepi-1",' + '"timestamp": "' + now_str + '","temperature": ' + t + ',"humidity": '+ h + ' }'
+        payload = '{ "device": "' + thing_name + '","timestamp": "' + now_str + '","temperature": ' + t + ',"humidity": '+ h + ' }'
         print(payload)
         myMQTTClient.publish("tandh", payload, 0)
         
