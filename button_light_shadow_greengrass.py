@@ -132,7 +132,6 @@ while True:
                 JSONPAYLOAD = '{"state":{"reported":{"lighton":0}}}'
             if LIGHTSHADOW == 1:
                 JSONPAYLOAD = '{"state":{"reported":{"lighton":1}}}'
-            print JSONPAYLOAD
             DEVICESHADOWHANDLER.shadowUpdate(JSONPAYLOAD, custom_shadow_callback_update, 5)
             LASTREPORTTIME = datetime.datetime.utcnow()
 

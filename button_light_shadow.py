@@ -9,6 +9,13 @@ import datetime
 from grovepi import *
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 
+HOME_PATH = '/home/pi/aws-iot-grovepi/'
+ca = HOME_PATH + 'root-CA.crt'
+crt = HOME_PATH + 'grovepi.cert.pem'
+key = HOME_PATH + 'grovepi.private.key'
+iot_endpoint = 'a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com'
+iot_thing_name = 'grovepi'
+
 # Custom Shadow callbacks
 def custom_shadow_callback_update(payload, responseStatus, token):
     # payload is a JSON string ready to be parsed using json.loads(...)
@@ -17,7 +24,7 @@ def custom_shadow_callback_update(payload, responseStatus, token):
         print "Update request " + token + " time out!"
     if responseStatus == "accepted":
         print "Update request with token: " + token + " accepted!"
-        # print(payload)
+        print(payload)
     if responseStatus == "rejected":
         print "Update request " + token + " rejected!"
 
@@ -27,7 +34,7 @@ def custom_shadow_callback_delta(payload, responseStatus, token):
     # in both Py2.x and Py3.x
     print "There is a shadow delta detected"
     payload_dict = json.loads(payload)
-    # print(payload)
+    print(payload)
     global LIGHTSHADOW
     LIGHTSHADOW = int(payload_dict["state"]["lighton"])
     print "Updating LIGHTSHADOW to " + str(LIGHTSHADOW) + " to resolve the delta"
@@ -45,18 +52,14 @@ BUTTONPRESSEDCOUNT = 0
 LIGHTSHADOW = 0
 
 # set up AWS IoT certificate-based connection
-MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient("grovepi")
-MY_MQTT_SHADOW_CLIENT.configureEndpoint(
-    "a12e1tnoddrce1.iot.ap-southeast-2.amazonaws.com", 8883)
-MY_MQTT_SHADOW_CLIENT.configureCredentials(
-    "/home/pi/aws-iot-grovepi/root-CA.crt", "/home/pi/aws-iot-grovepi/grovepi.private.key",
-    "/home/pi/aws-iot-grovepi/grovepi.cert.pem")
+MY_MQTT_SHADOW_CLIENT = AWSIoTMQTTShadowClient(iot_thing_name)
+MY_MQTT_SHADOW_CLIENT.configureEndpoint(iot_endpoint, 8883)
+MY_MQTT_SHADOW_CLIENT.configureCredentials(ca, crt, key)
 MY_MQTT_SHADOW_CLIENT.configureAutoReconnectBackoffTime(1, 32, 20)
 MY_MQTT_SHADOW_CLIENT.configureConnectDisconnectTimeout(10)  # 10 sec
 MY_MQTT_SHADOW_CLIENT.configureMQTTOperationTimeout(5)  # 5 sec
 MY_MQTT_SHADOW_CLIENT.connect()
-DEVICESHADOWHANDLER = MY_MQTT_SHADOW_CLIENT.createShadowHandlerWithName(
-    "grovepi", True)
+DEVICESHADOWHANDLER = MY_MQTT_SHADOW_CLIENT.createShadowHandlerWithName(iot_thing_name, True)
 DEVICESHADOWHANDLER.shadowRegisterDeltaCallback(custom_shadow_callback_delta)
 
 print "This example will turn a LED on and off with button presses / IoT shadow deltas"
