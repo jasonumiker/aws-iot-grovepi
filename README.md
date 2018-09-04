@@ -22,15 +22,20 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 ## Workshop
 
 ### Step 1 - Add our Thing to the IoT Core Service
-1. Choose the `Sydney` Region in the upper right of the AWS Console
-1. Open the `IoT Core` Service
-1. On the left-hand side choose `Manage` -> `Things`
-1. Click the `Register a thing` button
-1. Click the `Create a single thing` button
-1. Enter `grovepi` for the thing's name then click `Next`
-1. Click the `Create certificate` button to the right of `One-click certificate creation`
-1. Click the `Download` links next to all three certificates generated for the new Thing
-1. Click `Done`
+<details>
+  <summary>
+    Show details
+  </summary>
+  1. Choose the `Sydney` Region in the upper right of the AWS Console
+  1. Open the `IoT Core` Service
+  1. On the left-hand side choose `Manage` -> `Things`
+  1. Click the `Register a thing` button
+  1. Click the `Create a single thing` button
+  1. Enter `grovepi` for the thing's name then click `Next`
+  1. Click the `Create certificate` button to the right of `One-click certificate creation`
+  1. Click the `Download` links next to all three certificates generated for the new Thing
+  1. Click `Done`
+</details>
 
 ### Step 2 - Add a Policy to the new Certificate and Activate
 1. On the left-hand side go to `Secure` -> `Policies`
