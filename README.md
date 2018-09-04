@@ -29,7 +29,7 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Click the `Create a single thing` button
 1. Enter `grovepi` for the thing's name then click `Next`
 1. Click the `Create certificate` button to the right of `One-click certificate creation`
-1. Click the `Download` links all three certificates generated for the new thing
+1. Click the `Download` links next to all three certificates generated for the new Thing
 1. Click `Done`
 
 ### Step 2 - Add a Policy to the new Certificate and Activate
@@ -39,10 +39,12 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Enter `iot:*` for the `Action`
 1. Enter `*` for the `Resource`
 1. Tick `Allow` and then click `Create`
-1. On the left-hand side go to `Secure` -> `Certifiates`
-1. Click `...` in the upper right corner of the certificate box and choose `Attach policy`
+1. On the left-hand side go to `Manage` -> `Things` and click on `grovepi`
+1. On the left-hand side go to `Security`
+1. On the left-hand side go to Policies
+1. Click `Actions` in the upper right corner and choose `Attach policy`
 1. Tick the `grovepi` Policy and then click `Attach`
-1. Click `...` in the upper right corner of the certificate box and choose `Activate`
+1. Click `Actions` in the upper right corner and choose `Activate`
 1. Click the `Activate` button
 
 ### Step 3 - Set up our GrovePI device
@@ -82,3 +84,21 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
     1. Go to `Test` on the left-hand side of the Iot Core Service Console
     1. Under `Subscription topic` type `tandh` and click `Subscribe to topic`
     1. Note that every few seconds the Thing is sending data to the Cloud about the Temperature and Humidity
+    
+### Step 6 - Rule to store incoming TanH raw data from MQTT in an S3 bucket
+1. Go to the S3 Console and click `+ Create bucket`
+1. For bucket name use `[your name]-tandh-raw` e.g. jumiker-tandh-raw (this name needs to be globally unique)
+1. Click `Create`
+1. Go to the IoT Core Console
+1. On the left-hand side go to `Act` then click `Create rule`
+1. Enter `tandh_datalake_raw` for the `Name`
+1. Enter `*` for the `Attribute`
+1. Enter `tandh` for the `Topic filter`
+1. Click `Add action` button
+1. Click `Store messages in an Amazon S3 bucket` and then the `Configure action` button
+1. Select the new S3 bucket from the `S3 bucket` drop-down
+1. Enter `tandh-raw` for the `Key`
+1. Click `Create a new role`
+1. Enter `tandh-datalake-raw-rule` for the `IAM role name` and then click the `Create a new role` button
+1. Choose the new role from the drop-down and then click the `Add action` button
+1. Click the `Create rule` button
