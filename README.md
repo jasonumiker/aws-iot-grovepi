@@ -97,8 +97,27 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Click `Add action` button
 1. Click `Store messages in an Amazon S3 bucket` and then the `Configure action` button
 1. Select the new S3 bucket from the `S3 bucket` drop-down
-1. Enter `tandh-raw` for the `Key`
+1. Enter `${timestamp()}` for the `Key`
 1. Click `Create a new role`
 1. Enter `tandh-datalake-raw-rule` for the `IAM role name` and then click the `Create a new role` button
 1. Choose the new role from the drop-down and then click the `Add action` button
 1. Click the `Create rule` button
+
+### Step 7 - Analyse the raw data in Athena
+1. Go to the Glue Console and choose `Crawlers` on the left-hand side
+1. Click the `Add crawler` button
+1. Enter `tandh` for the `Crawler name` and click `Next`
+1. Click the folder icon to the right of the `Include path` and choose the tandh bucket then click `Select`
+1. Click `Next` and `Next` again
+1. Leave the default option to `Create an IAM role` and enter `tandh` for the IAM role name then click `Next`
+1. Leave the default `Frequency` of `Run on demand` and click `Next`
+1. Click `Add database`, enter `tandh` for the name, and click `Create`
+1. Click `Next` and then `Finish`
+1. Do an initial run of the new Crawler
+1. After that succeeds go to the Athena service in the Console
+1. Choose the new `tandh` database in the dropdown
+1. Note the table name on the left-hand side which should correspond to the bucket name
+1. Run the query `SELECT * from jumiker_tandh_raw;` substituting in your own table name.
+1. (Optional) Try other SQL queries and aggregations
+
+### Step 8 - Visualise the data in Quicksight
