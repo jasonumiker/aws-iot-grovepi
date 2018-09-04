@@ -10,7 +10,7 @@ These apps integrate the Pi with the AWS IoT Service via MQTT and the Shadow.
 ## Button and LED Shadow Example
 In `button_light_shadow.py` the device reconciles against a cloud-based shadow representing whether the LED should be on. You can either flip this in the AWS console by editing the shadow or pushing the button which flips the shadow in the cloud which then reconciles down to the device.
 
-Whereas `button_light_shadow_greengrass.py` reconciles against a Greengrass-based shadow instead of one directly in the Cloud.
+Whereas `button_light_shadow_greengrass.py` reconciles against a Greengrass-based local shadow instead of one directly in the Cloud.
 
 And `button_light_shadow_local.py` is a local test that does not interact with the Cloud at all.
 
