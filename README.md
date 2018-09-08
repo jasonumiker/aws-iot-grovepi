@@ -1,23 +1,11 @@
 # aws-iot-grovepi
-This project has two sample apps meant to be run on a Raspberry Pi with a GrovePi+ (https://www.dexterindustries.com/grovepi/) using the following add-on modules:
+This Workshop has two sample apps meant to be run on a Raspberry Pi with a GrovePi+ (https://www.dexterindustries.com/grovepi/) using the following add-on modules:
 * Button
 * LED
 * Temperature / Humidity Sensor
 * LCD Screen
 
-These apps integrate the Pi with the AWS IoT Service via MQTT and the Shadow.
-
-## Button and LED Shadow Example
-In `button_light_shadow.py` the device reconciles against a cloud-based shadow representing whether the LED should be on. You can either flip this in the AWS console by editing the shadow or pushing the button which flips the shadow in the cloud which then reconciles down to the device.
-
-Whereas `button_light_shadow_greengrass.py` reconciles against a Greengrass-based local shadow instead of one directly in the Cloud.
-
-And `button_light_shadow_local.py` is a local test that does not interact with the Cloud at all.
-
-## Temperature and Humidity
-In `tandh.py` the device takes temperature and humidity readings and displays them on the LCD screen as well as emits them via MQTT to the IoT service. These can then be published to S3, ElasticSearch or DynamoDB as required via rules in the AWS IoT Service.
-
-And `tandh_local.py` is a local test that does not interact with the Cloud at all.
+These apps integrate the Pi with the AWS IoT Service via MQTT and the Shadow. Once the data is in S3 we do some analytics with our serverless Data Lake services.
 
 ## Workshop
 
@@ -27,12 +15,12 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. On the left-hand side choose `Manage` -> `Things`
 1. Click the `Register a thing` button
 1. Click the `Create a single thing` button
-1. Enter `grovepi` for the thing's name then click `Next`
+1. Enter `username-grovepi` for the thing's name where username is your unique username then click `Next`
 1. Click the `Create certificate` button to the right of `One-click certificate creation`
 1. Click the `Download` links next to all three certificates generated for the new Thing
 1. Click `Done`
 
-### Step 2 - Add a Policy to the new Certificate and Activate
+### Step 2 - Add a Policy to the new Certificate and Activate Access
 1. On the left-hand side go to `Secure` -> `Policies`
 1. Click the `Create a policy` button
 1. Enter `grovepi` for the policy's name
@@ -47,7 +35,9 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Click `Actions` in the upper right corner and choose `Activate`
 1. Click the `Activate` button
 
-### Step 3 - Set up our GrovePI device
+At this stage we now have everything ready to go in the Cloud. Now we'll set up our IoT Device.
+
+### Step 3 - Set up our Rasperry Pi + GrovePI device
 1. Open a Terminal (should default to `/home/pi` folder)
 1. Clone the GitHub repo with the command `git clone https://github.com/jasonumiker/aws-iot-grovepi.git`
 1. Run the command `cd aws-iot-grovepi`
@@ -58,7 +48,9 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Connect the Temperature and Humidity Sensor to D7
 1. Connect the LCD screen to any of the I2C ports
 
-### Step 4 - button_light_shadow.py
+### Step 4 - button_light_shadow.py Example
+This example illustrates IoT Core's shadow feature.
+
 1. Edit `button_light_shadow.py` and update the following variables near the top:
     1. crt to `xxxxxxxxxx-certificate.pem.crt`
     1. key to `xxxxxxxxxx-private.pem.key`
@@ -73,7 +65,13 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Change the document's Desired to 1 if it's 0 or 0 if it's 1 and `Save`
 1. Note the split-second `Delta` field that is added to the document to identify that there is a delta between the desired state in the cloud and the actual state on the device. The device subscribes to deltas and will change to match within a few seconds.
 
-### Step 5 - tandh.py
+The shadow allows you to manage IoT Things that have inconsistent network connectivity by setting the Desired state in the cloud - the device will reconcile with that state when it reconnects to the network. It also lets you see the current Actual state of devices in the field if they are reporting back properly.
+
+If you want to allow for local non-Cloud logic and processing for Things in areas where the network connectivity is unreliable or there is a large fleet of Things and them all reaching out to the Cloud is inefficient AWS Greengrass can help. It allows local on-site shadows and Lambdas to process the data and perhaps only send the relevant subset or aggregations back up to the Cloud.
+
+### Step 5 - tandh.py Example
+This example illustrates one of the most common use-cases - IoT Sensors sending data back for analytics in the Cloud.
+
 1. Edit `tandh.py` and update the following variables near the top:
     1. crt to `xxxxxxxxxx-certificate.pem.crt`
     1. key to `xxxxxxxxxx-private.pem.key`
@@ -86,6 +84,8 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
     1. Note that every few seconds the Thing is sending data to the Cloud about the Temperature and Humidity
     
 ### Step 6 - Rule to store incoming TanH raw data from MQTT in an S3 bucket
+This example illustrates how the IoT Core's Rules work as well as how to collect IoT data into a Data Lake in S3.
+
 1. Go to the S3 Console and click `+ Create bucket`
 1. For bucket name use `username-tandh-raw` e.g. jumiker-tandh-raw (this name needs to be globally unique)
 1. Click `Create`
@@ -104,6 +104,8 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. Click the `Create rule` button
 
 ### Step 7 - Analyse the raw data in Athena
+This example shows how to analyse the data in S3 without needing to load it into a database or Elasticsearch first.
+
 1. Go to the Glue Console and choose `Crawlers` on the left-hand side
 1. Click the `Add crawler` button
 1. Enter `username-tandh` for the `Crawler name` and click `Next`
@@ -121,6 +123,8 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. (Optional) Try other SQL queries and aggregations
 
 ### Step 8 - Visualise the data in QuickSight
+This example shows how we can visualise the SQL queries that we are making against the data in S3 via Athena.
+
 1. Go to the QuickSight Console ensuring you select N. Virginia for the region
 1. Click the User icon in the upper-right and choose `Manage QuickSight`
 1. Choose `Account Settings` on the left-hand side
@@ -137,8 +141,8 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 1. In the `Fields list` click `Timestamp` then `Temperature` then `Humidity`
 1. Under `Visual types` click the `Line chart`
 
-### (Optional) Step 9 - Play around with the SDK and other sensors
-1. There is a number of SDKs for the other sensors / devices in the box in the `/home/pi/Dexter/GrovePi/Software/` folder.
+### (Optional) Step 9 - Play around with the SDKs and other GrovePi sensors/devices
+1. There is a number of SDKs for the other sensors/devices in the box in the `/home/pi/Dexter/GrovePi/Software/` folder.
     1. The Python one seems to be the most fully-formed
-1. And to integrate these thigns with the cloud our IoT SDKs are here - https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html
+1. And to integrate these things with the cloud our IoT SDKs are here - https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html
 1. We'll reset the SD Card after the workshop so feel free to download and do whatever you like on the device for the rest of the session
