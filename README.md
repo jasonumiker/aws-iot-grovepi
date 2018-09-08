@@ -87,7 +87,7 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
     
 ### Step 6 - Rule to store incoming TanH raw data from MQTT in an S3 bucket
 1. Go to the S3 Console and click `+ Create bucket`
-1. For bucket name use `[your name]-tandh-raw` e.g. jumiker-tandh-raw (this name needs to be globally unique)
+1. For bucket name use `username-tandh-raw` e.g. jumiker-tandh-raw (this name needs to be globally unique)
 1. Click `Create`
 1. Go to the IoT Core Console
 1. On the left-hand side go to `Act` then click `Create rule`
@@ -106,18 +106,39 @@ And `tandh_local.py` is a local test that does not interact with the Cloud at al
 ### Step 7 - Analyse the raw data in Athena
 1. Go to the Glue Console and choose `Crawlers` on the left-hand side
 1. Click the `Add crawler` button
-1. Enter `tandh` for the `Crawler name` and click `Next`
+1. Enter `username-tandh` for the `Crawler name` and click `Next`
 1. Click the folder icon to the right of the `Include path` and choose the tandh bucket then click `Select`
 1. Click `Next` and `Next` again
 1. Leave the default option to `Create an IAM role` and enter `tandh` for the IAM role name then click `Next`
 1. Leave the default `Frequency` of `Run on demand` and click `Next`
-1. Click `Add database`, enter `tandh` for the name, and click `Create`
+1. Click `Add database`, enter `username-tandh` for the name, and click `Create`
 1. Click `Next` and then `Finish`
 1. Do an initial run of the new Crawler
 1. After that succeeds go to the Athena service in the Console
-1. Choose the new `tandh` database in the dropdown
+1. Choose the new `username-tandh` database in the dropdown
 1. Note the table name on the left-hand side which should correspond to the bucket name
-1. Run the query `SELECT * from jumiker_tandh_raw;` substituting in your own table name.
+1. Run a query like `SELECT * from username_tandh_raw;` substituting in your own table name.
 1. (Optional) Try other SQL queries and aggregations
 
-### Step 8 - Visualise the data in Quicksight
+### Step 8 - Visualise the data in QuickSight
+1. Go to the QuickSight Console ensuring you select N. Virginia for the region
+1. Click the User icon in the upper-right and choose `Manage QuickSight`
+1. Choose `Account Settings` on the left-hand side
+1. Click the `Edit AWS permissions` button
+1. Tick `Athena` and `S3` and then click the `Choose S3 buckets` link and choose the tandh_raw bucket
+1. Click the `Apply` button and then change the region back to `Sydney`
+1. Click the `Manage data` button in the upper-right
+1. Click the `New data set` button in the upper-left
+1. Click on `Athena`
+1. Enter `username-tandh` for the `Data source name` substituting your own name or username
+1. Click on the `Create data source` button
+1. Pick your new Database and Table from the dropdowns then click the `Select` button
+1. Tick `Directly query your data` then click the `Visualize` button
+1. In the `Fields list` click `Timestamp` then `Temperature` then `Humidity`
+1. Under `Visual types` click the `Line chart`
+
+### (Optional) Step 9 - Play around with the SDK and other sensors
+1. There is a number of SDKs for the other sensors / devices in the box in the `/home/pi/Dexter/GrovePi/Software/` folder.
+    1. The Python one seems to be the most fully-formed
+1. And to integrate these thigns with the cloud our IoT SDKs are here - https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html
+1. We'll reset the SD Card after the workshop so feel free to download and do whatever you like on the device for the rest of the session
