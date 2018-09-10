@@ -122,15 +122,17 @@ This example shows how to analyse the data in S3 without needing to load it into
 1. Run a query like `SELECT * from username_tandh_raw;` substituting in your own table name.
 1. (Optional) Try other SQL queries and aggregations
 
-### Step 8 - Visualise the data in QuickSight
-This example shows how we can visualise the SQL queries that we are making against the data in S3 via Athena.
-
+### Step 8 - (Only needed once per account) Set up the QuickSight Service
 1. Go to the QuickSight Console ensuring you select N. Virginia for the region
 1. Click the User icon in the upper-right and choose `Manage QuickSight`
 1. Choose `Account Settings` on the left-hand side
 1. Click the `Edit AWS permissions` button
 1. Tick `Athena` and `S3` and then click the `Choose S3 buckets` link and choose the tandh_raw bucket
 1. Click the `Apply` button and then change the region back to `Sydney`
+
+### Step 9 - Visualise the data in QuickSight
+This example shows how we can visualise the SQL queries that we are making against the data in S3 via Athena.
+
 1. Click the `Manage data` button in the upper-right
 1. Click the `New data set` button in the upper-left
 1. Click on `Athena`
@@ -141,7 +143,7 @@ This example shows how we can visualise the SQL queries that we are making again
 1. In the `Fields list` click `Timestamp` then `Temperature` then `Humidity`
 1. Under `Visual types` click the `Line chart`
 
-### (Optional) Step 9 - Play around with the SDKs and other GrovePi sensors/devices
+### (Optional) Step 10 - Play around with the SDKs and other GrovePi sensors/devices
 1. There is a number of SDKs for the other sensors/devices in the box in the `/home/pi/Dexter/GrovePi/Software/` folder.
     1. The Python one seems to be the most fully-formed
 1. And to integrate these things with the cloud our IoT SDKs are here - https://docs.aws.amazon.com/iot/latest/developerguide/iot-sdks.html
